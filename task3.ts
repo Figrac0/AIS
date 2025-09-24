@@ -1,18 +1,77 @@
-type StringTriple = [string, string, string];
+import { OwnerImpl, DocType } from "./task1";
+import { CarImpl, BodyType, CarClass } from "./task2";
 
-function concatTriple(triple: StringTriple): string {
-    return triple[0] + triple[1] + triple[2];
+// === Интерфейс с обобщением ===
+interface VehicleStorage<T extends { printInfo(): void }> {
+    createdAt: Date;
+    items: T[];
+    getAll(): T[];
 }
 
-const t1: StringTriple = ["Hello", " ", "TS"];
-console.log("-----------------------------task3-----------------------------");
-console.log("Кортеж t1:", t1);
-console.log("Конкатенация:", concatTriple(t1));
+// === Класс-хранилище ===
+class VehicleStorageImpl<T extends { printInfo(): void }>
+    implements VehicleStorage<T>
+{
+    createdAt: Date;
+    items: T[];
 
-const t2: StringTriple = ["А", "Б", "В"];
-console.log("Конкатенация:", concatTriple(t2)); // "АБВ"
+    constructor() {
+        this.createdAt = new Date();
+        this.items = [];
+    }
 
-//errors :
-// const bad1: StringTriple = ["только", "две"];
-// const bad2: StringTriple = ["раз", "два", 3];
-// const bad3: StringTriple = ["раз", "два", "три", "!"];
+    add(item: T): void {
+        this.items.push(item);
+    }
+
+    getAll(): T[] {
+        return this.items;
+    }
+}
+
+// === Пример использования ===
+
+// Создадим владельца
+const owner = new OwnerImpl({
+    lastName: "Сидоров",
+    firstName: "Пётр",
+    patronymic: "Алексеевич",
+    birthDate: new Date(1990, 2, 20),
+    documentType: DocType.DriverLicense,
+    documentSeries: "7700",
+    documentNumber: "987654",
+});
+
+// Создадим пару машин
+const car1 = new CarImpl(
+    "Audi",
+    "A6",
+    2021,
+    "WAUZ6C12345678901",
+    "А222ВС77",
+    owner,
+    BodyType.Sedan,
+    CarClass.Business
+);
+
+const car2 = new CarImpl(
+    "Mercedes",
+    "E200",
+    2020,
+    "WDBZF4JB5LA123456",
+    "М555ММ77",
+    owner,
+    BodyType.SUV,
+    CarClass.Premium
+);
+
+// Создадим хранилище
+const storage = new VehicleStorageImpl<typeof car1>();
+
+storage.add(car1);
+storage.add(car2);
+
+console.log("=== Хранилище ТС ===");
+for (const v of storage.getAll()) {
+    v.printInfo();
+}
