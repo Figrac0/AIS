@@ -1,11 +1,14 @@
-import { Component, signal } from '@angular/core';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { NavComponent } from './shared/nav/nav';
 
 @Component({
+  standalone: true,
   selector: 'app-root',
   templateUrl: './app.html',
-  standalone: false,
-  styleUrl: './app.scss'
+  styleUrls: ['./app.scss'],
+  imports: [RouterOutlet, NavComponent],
 })
-export class App {
-  protected readonly title = signal('digital-department-application');
+export class AppComponent {
+  title = 'Digital Department Application';
 }

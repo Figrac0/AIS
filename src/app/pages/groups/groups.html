@@ -1,0 +1,22 @@
+<h1>Группы</h1>
+
+<div class="card">
+  <p>
+    Ваша группа:
+    <strong *ngIf="randomGroup; else none">{{ randomGroup }}</strong>
+    <ng-template #none>—</ng-template>
+  </p>
+
+  <button class="btn" (click)="generateGroup()">Случайная группа</button>
+
+  <hr />
+
+  <ng-container *ngIf="groupId; else noGroup">
+    <p>
+      Переданный номер группы: <strong>{{ groupId }}</strong>
+    </p>
+  </ng-container>
+  <ng-template #noGroup>
+    <p>༼つಠ益ಠ༽つ ─=≡ΣO))</p>
+  </ng-template>
+</div>

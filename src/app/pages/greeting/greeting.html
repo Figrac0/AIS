@@ -1,0 +1,11 @@
+<h1>Приветствие</h1>
+
+<div class="card">
+  <label>
+    Введите имя:
+    <input type="text" [(ngModel)]="name" placeholder="Иван" />
+  </label>
+  <button class="btn" (click)="greet()">Поздороваться</button>
+
+  <p *ngIf="greetedName">Здравствуйте, {{ greetedName }}!</p>
+</div>
