@@ -95,7 +95,7 @@ ng g c shared/nav
 <a routerLink="/greeting">Приветствие</a>  
 <a routerLink="/about">О себе</a>  
 <a routerLink="/groups">Группы</a>
-
+```
 Добавлены директивы `routerLinkActive` и `routerLinkActiveOptions` для подсветки активной ссылки.
 
 Панель подключена в `AppComponent` и отображается на всех страницах приложения.
@@ -128,7 +128,7 @@ const routes: Routes = [
   { path: 'groups/:id', component: GroupsComponent },
   { path: '**', redirectTo: 'greeting' }
 ];
-
+```
 Реализован редирект на `/greeting` при переходе по несуществующему URL.  
 В `app.html` добавлен `<router-outlet>`, куда подставляется активный компонент.
 
