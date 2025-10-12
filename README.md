@@ -10,50 +10,161 @@ To start a local development server, run:
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+# Лабораторная работа №4. Основы Angular. Роутинг
 
-## Code scaffolding
+## Цель и постановка задания
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+В процессе выполнения заданий необходимо было ознакомиться с основами **Angular**, созданием компонентов, настройкой роутинга, работой с шаблонами и стилями, а также с принципами двустороннего связывания данных и жизненного цикла компонентов.
+
+---
+
+## Задание 1. Создание Angular-проекта
+
+### Условие
+
+Создать Angular-проект и запустить его в браузере.
+
+### Ключевые моменты реализации
+
+1. Установлен Angular CLI:
+   ```bash
+   npm install -g @angular/cli
+
+2. Создан проект:
+   ```bash
+   ng new digital-department-application --routing --style=scss
+
+3. Проект открыт в Visual Studio Code и запущен через:
+   ```bash
+   npm run start
+
+## Задание 2. Создание страниц и шаблонов
+
+### Условие
+
+Добавить три компонента-страницы:
+- **О себе**
+- **Приветствие**
+- **Группы**
+
+### Ключевые моменты реализации
+
+1. Компоненты созданы командами:
+   ```bash
+   ng g c pages/about
+   ng g c pages/greeting
+   ng g c pages/groups
+
+2. Все компоненты реализованы как **standalone**, что исключает необходимость декларации в `NgModule`.
+
+3. **Страница «О себе»** содержит два блока:
+
+   - **Слева** — информация о студенте, навыках и интересах с использованием HTML-тегов:
+     ```html
+     <p>, <h3>, <ul>, <ol>
+     ```
+   - **Справа** — изображение или GIF, расположенные в папке `src/assets`.
+   - В нижней части страницы добавлена кнопка **«Перейти к моей группе»**, выполняющая переход на страницу **«Группы»** с передачей параметра маршрута `groupId`.
+
+4. **Страница «Группы»**:
+   - Принимает параметр маршрута `/groups/:id` и отображает переданный номер группы.
+   - При отсутствии параметра отображается сообщение:
+     ```
+     Группа не найдена
+     ```
+   - Добавлена интерактивная кнопка **«Случайная группа»**, которая генерирует случайное значение в диапазоне от **6130** до **6139** и выводит его на экран.
+
+5. **Страница «Приветствие»**:
+   - Содержит поле ввода имени, кнопку и текст приветствия, который появляется после нажатия на кнопку.
+   - Реализовано двустороннее связывание данных (`[(ngModel)]`) для динамического обновления содержимого.
+  
+  ## Задание 3. Компонент навигации
+
+### Условие
+
+Создать отдельный компонент навигационной панели и добавить его на все страницы приложения.
+
+### Ключевые моменты реализации
+
+Компонент создан:
+```bash
+ng g c shared/nav
+
+В шаблоне реализованы ссылки:
+```bash
+<a routerLink="/greeting">Приветствие</a>  
+<a routerLink="/about">О себе</a>  
+<a routerLink="/groups">Группы</a>
+
+Добавлены директивы `routerLinkActive` и `routerLinkActiveOptions` для подсветки активной ссылки.
+
+Панель подключена в `AppComponent` и отображается на всех страницах приложения.
+
+Стилизация (`nav.scss`): горизонтальное меню, отступы, выделение активной ссылки.
+
+### Результат работы
+
+Реализована универсальная панель навигации, обеспечивающая переход между всеми страницами без перезагрузки страницы.
+
+---
+
+## Задание 4. Настройка роутинга
+
+### Условие
+
+Настроить маршрутизацию между страницами.  
+При переходе на несуществующий адрес пользователь должен быть перенаправлен на страницу **«Приветствие»**.
+
+### Ключевые моменты реализации
+
+В `app-routing-module.ts` настроены маршруты:
 
 ```bash
-ng generate component component-name
-```
+const routes: Routes = [
+  { path: '', redirectTo: 'greeting', pathMatch: 'full' },
+  { path: 'greeting', component: GreetingComponent },
+  { path: 'about', component: AboutComponent },
+  { path: 'groups', component: GroupsComponent },
+  { path: 'groups/:id', component: GroupsComponent },
+  { path: '**', redirectTo: 'greeting' }
+];
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Реализован редирект на `/greeting` при переходе по несуществующему URL.  
+В `app.html` добавлен `<router-outlet>`, куда подставляется активный компонент.
 
-```bash
-ng generate --help
-```
+### Результат работы
 
-## Building
+Навигация и маршрутизация работают корректно.  
+Поддерживаются переходы по ссылкам и по прямым URL с параметрами.
 
-To build the project run:
+---
 
-```bash
-ng build
-```
+## Задание 5. Приветствие и жизненный цикл компонентов
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Условие
 
-## Running unit tests
+На странице **«Приветствие»** реализовать ввод имени пользователя и вывод персонального приветствия.  
+Продемонстрировать работу жизненного цикла компонентов.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Ключевые моменты реализации
 
-```bash
-ng test
-```
+Использовано двустороннее связывание через `[(ngModel)]`.
 
-## Running end-to-end tests
+При клике на кнопку вызывается метод `greet()`, который отображает введённое имя пользователя.
 
-For end-to-end (e2e) testing, run:
+В компоненте реализованы хуки жизненного цикла:
+- `ngOnInit`
+- `ngOnChanges`
+- `ngDoCheck`
+- `ngAfterViewInit`
+- `ngOnDestroy`
 
-```bash
-ng e2e
-```
+Логи выводятся в консоль для наглядного отслеживания этапов работы компонента.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Добавлено оформление формы (`input`, `button`, `card`) для удобного визуального восприятия.
 
-## Additional Resources
+### Результат работы
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+При вводе имени и нажатии кнопки отображается приветствие пользователя.  
+В консоли отражаются вызовы методов жизненного цикла, демонстрируя работу Angular-компонента.
+
