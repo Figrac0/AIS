@@ -16,4 +16,3 @@
 <script src="dist/task2.js"></script>  
 ...  
 <script src="dist/task6.js"></script>  
-
