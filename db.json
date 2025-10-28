@@ -1,0 +1,66 @@
+{
+  "groups": [
+    {
+      "id": "1",
+      "number": "6130-020402D"
+    },
+    {
+      "id": "2",
+      "number": "6131-020402D"
+    },
+    {
+      "id": "3",
+      "number": "6132-020402D"
+    }
+  ],
+  "students": [
+    {
+      "id": "1",
+      "fullName": "Иванов Иван Иванович",
+      "birthYear": 2009,
+      "groupId": 1,
+      "course": 2,
+      "enrollYear": 2023
+    },
+    {
+      "id": "2",
+      "fullName": "Петров Пётр Петрович",
+      "birthYear": 2006,
+      "groupId": 1,
+      "course": 3,
+      "enrollYear": 2022
+    },
+    {
+      "id": "3",
+      "fullName": "Сидорова Анна Сергее",
+      "birthYear": 2008,
+      "groupId": 2,
+      "course": 2,
+      "enrollYear": 2023
+    },
+    {
+      "id": "5eee",
+      "fullName": "Саблин Сергей  Игоревчи",
+      "birthYear": 2004,
+      "groupId": 3,
+      "course": 1,
+      "enrollYear": 2018
+    },
+    {
+      "id": "f864",
+      "fullName": "Олег Олег Олегович ",
+      "birthYear": 2009,
+      "groupId": 3,
+      "course": 4,
+      "enrollYear": 2020
+    },
+    {
+      "id": "56d5",
+      "fullName": "Саблин Вывфыв ВвФыфв",
+      "birthYear": 2004,
+      "groupId": 2,
+      "course": 1,
+      "enrollYear": 2019
+    }
+  ]
+}

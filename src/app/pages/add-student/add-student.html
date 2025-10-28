@@ -1,0 +1,33 @@
+<h1>Добавление студента</h1>
+
+<form [formGroup]="studentForm" (ngSubmit)="onSubmit()" class="card form">
+  <label>
+    ФИО:
+    <input type="text" formControlName="fullName" />
+  </label>
+
+  <label>
+    Год рождения:
+    <input type="number" formControlName="birthYear" />
+  </label>
+
+  <label>
+    Группа:
+    <select formControlName="groupId">
+      <option value="">-- выберите группу --</option>
+      <option *ngFor="let g of groups" [value]="g.id">{{ g.number }}</option>
+    </select>
+  </label>
+
+  <label>
+    Курс:
+    <input type="number" formControlName="course" />
+  </label>
+
+  <label>
+    Год поступления:
+    <input type="number" formControlName="enrollYear" />
+  </label>
+
+  <button type="submit" [disabled]="studentForm.invalid">Добавить</button>
+</form>

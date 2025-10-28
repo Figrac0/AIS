@@ -1,22 +1,38 @@
 <h1>Группы</h1>
 
 <div class="card">
-  <p>
-    Ваша группа:
-    <strong *ngIf="randomGroup; else none">{{ randomGroup }}</strong>
-    <ng-template #none>—</ng-template>
-  </p>
-
-  <button class="btn" (click)="generateGroup()">Случайная группа</button>
+  <button routerLink="/add-student" class="btn" style="margin-bottom: 10px">
+    ➕ Добавить студента
+  </button>
+  
+  <label>
+    Выберите группу:
+    <select [(ngModel)]="selectedGroupId" (change)="onGroupChange()">
+      <option [ngValue]="null" disabled selected>-- выберите группу --</option>
+      <option *ngFor="let group of groups" [ngValue]="group.id">
+        {{ group.number }}
+      </option>
+    </select>
+  </label>
 
   <hr />
 
-  <ng-container *ngIf="groupId; else noGroup">
-    <p>
-      Переданный номер группы: <strong>{{ groupId }}</strong>
-    </p>
-  </ng-container>
+ 
+  <div *ngIf="selectedGroupId; else noGroup">
+    <h3>Студенты группы {{ selectedGroup?.number }}</h3>
+
+    <ul>
+      <li *ngFor="let student of filteredStudents" [appYoungStudent]="student.birthYear">
+        {{ student.fullName }} — {{ student.course }} курс ({{ student.enrollYear }} г.) ·
+        {{ student.birthYear | century }}
+
+        <a [routerLink]="['/edit-student', student.id]" class="btn small"> Редактировать</a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Шаблон, который показывается, если группа не выбрана -->
   <ng-template #noGroup>
-    <p>༼つಠ益ಠ༽つ ─=≡ΣO))</p>
+    <p>Выберите группу, чтобы увидеть студентов.</p>
   </ng-template>
 </div>

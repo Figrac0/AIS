@@ -1,0 +1,41 @@
+<h1>Редактирование студента</h1>
+
+<form *ngIf="student" (ngSubmit)="onSubmit()" class="card form">
+  <label>
+    ФИО:
+    <input type="text" [(ngModel)]="student.fullName" name="fullName" required />
+  </label>
+
+  <label>
+    Год рождения:
+    <input type="number" [(ngModel)]="student.birthYear" name="birthYear" required />
+  </label>
+
+  <label>
+    Группа:
+    <select [(ngModel)]="student.groupId" name="groupId" required>
+      <option *ngFor="let g of groups" [value]="g.id">{{ g.number }}</option>
+    </select>
+  </label>
+
+  <label>
+    Курс:
+    <input type="number" [(ngModel)]="student.course" name="course" required min="1" max="6" />
+  </label>
+
+  <label>
+    Год поступления:
+    <input
+      type="number"
+      [(ngModel)]="student.enrollYear"
+      name="enrollYear"
+      required
+      min="2000"
+      [max]="currentYear"
+    />
+  </label>
+
+  <button type="submit" [disabled]="isSaving">Сохранить</button>
+</form>
+
+<p *ngIf="!student">Студент не найден.</p>
