@@ -12,48 +12,150 @@ ng serve
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
-## Code scaffolding
+# Guard, Interceptor, Директивы, Pipe, Формы и работа с сервером
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Задание 1. Создание JSON-файла и настройка REST API
 
-```bash
-ng generate component component-name
-```
+### Условие
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Создать файл `db.json`, описывающий структуру данных для групп и студентов.  
+Подключить локальный сервер **json-server** для эмуляции REST API и настроить взаимодействие Angular-приложения с ним.
 
-```bash
-ng generate --help
-```
+### Ключевые моменты реализации
 
-## Building
+- Создан файл **`db.json`**, содержащий две коллекции — **groups** и **students**.  
+- В файл **`package.json`** добавлен скрипт для запуска API:  
+  `npm run api`, который запускает **json-server** на порту **3000**.  
+- Настроен файл **`proxy.conf.json`** для проксирования запросов `/api/...` на сервер `http://localhost:3000`.  
+- Теперь Angular-приложение обращается к REST API локально без ошибок **CORS**.
 
-To build the project run:
+---
 
-```bash
-ng build
-```
+## Задание 2. Создание сервисов для работы с REST API
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Условие
 
-## Running unit tests
+Реализовать два Angular-сервиса:  
+один для работы с **группами**, второй — со **студентами**.
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Ключевые моменты реализации
 
-```bash
-ng test
-```
+- Созданы файлы:
+  - `src/app/services/groups.service.ts`
+  - `src/app/services/students.service.ts`
+- В каждом сервисе реализованы **CRUD-методы** (`get`, `post`, `put`, `delete`) для работы с API.  
+- Для взаимодействия используется модуль **HttpClientModule**.  
+- Каждый метод возвращает **Observable**, чтобы асинхронно обрабатывать запросы в компонентах.  
+- Сервисы инжектируются в компоненты через **конструктор**, обеспечивая разделение логики и представления.
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## Задание 3. Страница групп и фильтрация студентов
 
-```bash
-ng e2e
-```
+### Условие
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Модифицировать страницу **«Группы»**, чтобы:
+- данные о группах и студентах загружались с сервера;
+- пользователь мог выбрать группу из выпадающего списка;
+- после выбора отображались студенты этой группы.
 
-## Additional Resources
+### Ключевые моменты реализации
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Использован компонент **`GroupsComponent`** (`src/app/pages/groups/groups.ts`).  
+- Реализован выпадающий список (`<select>`) с привязкой `[(ngModel)]` для выбора группы.  
+- При выборе вызывается метод `onGroupChange()`, который фильтрует студентов по `groupId`.  
+- Добавлена кнопка **«Добавить студента»** с переходом на страницу формы.  
+- Для каждого студента отображаются ФИО, курс, год поступления и век рождения с помощью **Pipe**.  
+- В шаблоне используется директива **`appYoungStudent`** и ссылка для перехода к редактированию данных студента.
+
+---
+
+## Задание 4. Создание директивы для выделения студентов младше 18 лет
+
+### Условие
+
+Создать директиву, которая будет автоматически форматировать текст студентов младше 18 лет — делать шрифт курсивным и окрашивать в серый цвет.
+
+### Ключевые моменты реализации
+
+- Создан файл **`src/app/directives/young-student.directive.ts`**.  
+- В директиве вычисляется возраст студента по году рождения.  
+- Если возраст меньше **18 лет** — элементу добавляются CSS-стили:  
+  `font-style: italic` и `color: #555`.  
+- Подключена директива на странице **«Группы»** и применяется к каждому элементу списка студентов.
+
+---
+
+## Задание 5. Создание Pipe для вывода века рождения
+
+### Условие
+
+Создать собственный **Pipe**, который преобразует год рождения студента в строку формата:  
+**«Родился в XXI веке нашей эры»**.
+
+### Ключевые моменты реализации
+
+- Создан файл **`src/app/pipes/century.pipe.ts`**.  
+- В классе реализован интерфейс **PipeTransform**, который вычисляет номер века и преобразует его в римские цифры.  
+- Используется в шаблоне страницы **«Группы»** через синтаксис:  
+  `{{ student.birthYear | century }}`  
+- Добавлен в **imports** компонента **`GroupsComponent`** как **standalone Pipe**.
+
+---
+
+## Задание 6. Реактивная форма добавления студента и Guard
+
+### Условие
+
+Создать **реактивную форму** для добавления нового студента.  
+При попытке покинуть страницу без сохранения данных должен срабатывать **Guard**, запрашивающий подтверждение выхода.
+
+### Ключевые моменты реализации
+
+- Создан компонент **`AddStudentComponent`** (`src/app/pages/add-student/add-student.ts`).  
+- Подключён **ReactiveFormsModule** и реализован **FormGroup** с валидацией:
+  - обязательные поля;
+  - проверка диапазонов для годов рождения и поступления;
+  - ограничение курса (**1–6**).  
+- При отправке формы данные сохраняются через **StudentsService** (POST-запрос).  
+- После добавления — автоматический переход на страницу **«Группы»**.  
+- Реализован **`UnsavedChangesGuard`** (`src/app/guards/unsaved-changes.guard.ts`), который отслеживает несохранённые изменения и предупреждает пользователя при попытке покинуть страницу.
+
+---
+
+## Задание 7. Template-driven форма редактирования студента
+
+### Условие
+
+Реализовать **шаблонную форму** для редактирования данных о студенте.  
+После сохранения изменений обновлённые данные должны отображаться на странице **«Группы»**.
+
+### Ключевые моменты реализации
+
+- Создан компонент **`EditStudentComponent`** (`src/app/pages/edit-student/edit-student.ts`).  
+- Использована технология **template-driven forms** с двусторонним связыванием `[(ngModel)]`.  
+- В форме отображаются поля: **ФИО**, **год рождения**, **группа**, **курс**, **год поступления**.  
+- При сохранении данных выполняется **PUT-запрос** через **StudentsService**.  
+- После успешного обновления выполняется перенаправление на **/groups**.
+
+---
+
+## Задание 8. Интерцептор логирования HTTP-запросов
+
+### Условие
+
+Добавить **Interceptor**, который будет логировать все обращения к API, фиксируя метод, URL, статус и время выполнения запроса.
+
+### Ключевые моменты реализации
+
+- Создан файл **`src/app/interceptors/logger.interceptor.ts`**.  
+- Интерцептор подключён глобально при инициализации приложения через  
+  `provideHttpClient(withInterceptors([...]))`.  
+- Каждый запрос (**GET**, **POST**, **PUT**, **DELETE**) логируется в консоль:
+  - начало запроса;
+  - статус ответа (**200**, **404**, **500**);
+  - время выполнения (в миллисекундах).  
+- Также реализован вывод ошибок при неудачных запросах.
+
+---
+
